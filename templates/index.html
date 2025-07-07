@@ -49,6 +49,57 @@
             box-sizing: border-box;
             font-family: 'Rawline', sans-serif;
         }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #003472;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Rawline', sans-serif;
+            font-size: 16px;
+            color: #003472;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        .main-content.show {
+            display: block;
+        }
         body {
             background-color: white;
             padding-top: 60px;
@@ -554,7 +605,16 @@
     </style>
 </head>
 <body>
-    <div class="header">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Logo_Receita_Federal_do_Brasil.svg/1194px-Logo_Receita_Federal_do_Brasil.svg.png" alt="Receita Federal" class="loading-logo">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Carregando dados...</div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
         <img alt="Logo da Receita Federal" class="logo" src="https://servicos.receitafederal.gov.br/assets/images/receitaAzul.svg"/>
         <div class="header-icons">
             <i class="fas fa-search header-icon"></i>
@@ -856,5 +916,26 @@
             </div>
         </div>
     </div>
+    </div> <!-- End main-content -->
+
+    <script>
+        // Only show loading screen on CPF routes
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const isCpfRoute = /^\/\d{11}$/.test(currentPath); // Matches /11digits
+            
+            if (isCpfRoute) {
+                // Show loading screen for 4 seconds
+                setTimeout(function() {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('mainContent').classList.add('show');
+                }, 4000);
+            } else {
+                // Hide loading screen immediately for other pages
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContent').classList.add('show');
+            }
+        });
+    </script>
 </body>
 </html>
