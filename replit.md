@@ -90,6 +90,12 @@ This is a Flask-based web application that simulates a Brazilian Federal Revenue
 - HTTPS recommended for payment processing
 - Session security with proper secret key management
 
+### Heroku Deployment
+- `.python-version` file specifies Python 3.11
+- `Procfile` configures web dyno with Gunicorn
+- Required environment variables: `FOR4PAYMENTS_SECRET_KEY`, `SESSION_SECRET`
+- Uses uv package manager for dependency management
+
 ### Error Handling
 - Comprehensive logging for payment processing errors
 - Graceful fallback for missing customer data
