@@ -113,3 +113,6 @@ Preferred communication style: Simple, everyday language.
 - July 07, 2025: Replaced news content with user data confirmation when accessed via CPF URL
 - July 07, 2025: Fixed Flask session secret key configuration with development fallback
 - July 07, 2025: Formatted birth date to dd/mm/yyyy format and simplified confirmation interface
+- July 10, 2025: Switched from For4Payments to Cashtime API integration per user request
+- July 10, 2025: Created cashtime.py module with PIX payment functionality
+- July 10, 2025: Experiencing 500 Internal Server Error from Cashtime API - investigating resolution

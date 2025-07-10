@@ -66,22 +66,22 @@ class CashtimeAPI:
             if not cpf_clean or len(cpf_clean) != 11:
                 cpf_clean = '12345678901'  # Fallback CPF
             
-            # Preparar payload simplificado (teste para resolver erro 500)
+            # Payload seguindo EXATAMENTE a documentação funcional
             cashtime_payload = {
                 "paymentMethod": "pix",
                 "customer": {
-                    "name": data.get('name', 'Cliente')[:50],  # Limitar nome
-                    "email": "test@email.com",  # Email simples para teste
-                    "phone": "11999999999",  # Telefone fixo
+                    "name": data.get('name', 'Cliente'),
+                    "email": data.get('email', 'email@dominio.com.br'),
+                    "phone": phone,
                     "document": {
-                        "number": "12345678901",  # CPF de teste
+                        "number": cpf_clean,
                         "type": "cpf"
                     }
                 },
                 "items": [
                     {
-                        "title": "Servico Digital",
-                        "description": "Pagamento",
+                        "title": "Produto Digital PIX",
+                        "description": data['description'],
                         "unitPrice": amount_cents,
                         "quantity": 1,
                         "tangible": False
@@ -90,7 +90,7 @@ class CashtimeAPI:
                 "isInfoProducts": True,
                 "installments": 1,
                 "installmentFee": 0,
-                "postbackUrl": "https://webhook.site/test",
+                "postbackUrl": "https://webhook.site/unique-uuid-4-testing",
                 "ip": "127.0.0.1",
                 "amount": amount_cents
             }
