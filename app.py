@@ -122,12 +122,21 @@ def buscar_cpf():
 @app.route('/generate-pix', methods=['POST'])
 def generate_pix():
     try:
-        from for4payments import create_payment_api
+        from cashtime import create_cashtime_api
 
         app.logger.info("[PROD] Iniciando geração de PIX...")
 
-        # Inicializa a API For4Payments
-        api = create_payment_api()
+        # Inicializa a API Cashtime
+        secret_key = os.environ.get('CASHTIME_SECRET_KEY')
+        if not secret_key:
+            app.logger.error("[PROD] CASHTIME SECRET KEY não encontrada!")
+            return jsonify({
+                'success': False,
+                'error': 'Configuração de pagamento indisponível'
+            }), 500
+        
+        api = create_cashtime_api(secret_key)
+        app.logger.info("[PROD] API Cashtime inicializada")
 
         # Pega os dados do cliente da sessão
         customer_data = session.get('customer_data', {
@@ -139,26 +148,28 @@ def generate_pix():
         # Gera um email aleatório baseado no nome do cliente
         customer_email = generate_random_email(customer_data['nome'])
 
-        # Dados para a transação
+        # Dados para a transação Cashtime
         payment_data = {
             'name': customer_data['nome'],
             'email': customer_email,
             'cpf': customer_data['cpf'],
-            'phone': customer_data['phone'],
-            'amount': 142.83  # Valor fixo da dívida
+            'phone': customer_data.get('phone', '11999999999'),
+            'amount': 142.83,  # Valor fixo da dívida
+            'description': 'Regularização de Débitos - Receita Federal',
+            'expirationMinutes': 60
         }
 
-        app.logger.info(f"[PROD] Dados do pagamento: {payment_data}")
+        app.logger.info(f"[PROD] Dados do pagamento Cashtime: {payment_data}")
 
-        # Cria o pagamento PIX
+        # Cria o pagamento PIX via Cashtime
         pix_data = api.create_pix_payment(payment_data)
 
-        app.logger.info(f"[PROD] PIX gerado com sucesso: {pix_data}")
+        app.logger.info(f"[PROD] PIX Cashtime gerado com sucesso: {pix_data}")
 
         return jsonify({
             'success': True,
-            'pixCode': pix_data['pixCode'],
-            'pixQrCode': pix_data['pixQrCode']
+            'pixCode': pix_data['pix_code'],
+            'pixQrCode': pix_data['qr_code_image']
         })
 
     except Exception as e:
