@@ -158,8 +158,8 @@ def send_sms():
         sms_payload = {
             "operator": operator,
             "destination_number": phone_international,
-            "message": f"RECEITA INFORMA: {first_name}, seu CPF caiu na malha fina. O prazo para realizar o pagamento do seu debito no valor de R$173,48 expira em 10min.",
-            "tag": "Receita_Federal",
+            "message": f"RECElTA INFORMA: {first_name}, seu debito com a declaracao de renda esta no valor de R$173,48. Regularize URGENTEMENTE!",
+            "tag": "envio-unico-painel",
             "user_reply": False,
             "webhook_url": ""
         }
