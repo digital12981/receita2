@@ -126,3 +126,4 @@ Preferred communication style: Simple, everyday language.
 - July 10, 2025: Simplified judicial warning text and added personalized user name/CPF information
 - July 10, 2025: Removed "Valor Total" display from modal and improved button accessibility with extra padding
 - July 10, 2025: Added Ministry of Justice seal below PIX copy button with "Ministério da Justiça" and "Governo Federal" text
+- July 10, 2025: Reduced payment amount from R$ 173,48 to R$ 83,48 per user request with adjusted individual year amounts
