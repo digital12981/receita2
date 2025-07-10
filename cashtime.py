@@ -52,33 +52,47 @@ class CashtimeAPI:
             # Converter valor para centavos
             amount_cents = int(float(data['amount']) * 100)
             
-            # Preparar payload para Cashtime
+            # Clean and validate phone
+            phone = data.get('phone', '11999999999')
+            if not phone or phone == '':
+                phone = '11999999999'
+            # Remove any formatting from phone
+            phone = ''.join(filter(str.isdigit, phone))
+            if len(phone) < 10:
+                phone = '11999999999'
+            
+            # Clean CPF
+            cpf_clean = data.get('cpf', '').replace('.', '').replace('-', '')
+            if not cpf_clean or len(cpf_clean) != 11:
+                cpf_clean = '12345678901'  # Fallback CPF
+            
+            # Preparar payload para Cashtime (seguindo exatamente a documentação)
             cashtime_payload = {
                 "paymentMethod": "pix",
                 "customer": {
                     "name": data.get('name', 'Cliente'),
-                    "email": data.get('email', 'cliente@dominio.com.br'),
-                    "phone": data.get('phone', '11999999999'),
+                    "email": data.get('email', 'email@dominio.com.br'),
+                    "phone": phone,
                     "document": {
-                        "number": data.get('cpf', '').replace('.', '').replace('-', ''),
+                        "number": cpf_clean,
                         "type": "cpf"
                     }
                 },
                 "items": [
                     {
-                        "title": "Regularização de Débitos",
+                        "title": "Produto Digital PIX",
                         "description": data['description'],
                         "unitPrice": amount_cents,
                         "quantity": 1,
                         "tangible": False  # Produto digital
                     }
                 ],
-                "isInfoProducts": True,  # Produto digital - sem necessidade de endereço
+                "isInfoProducts": True,  # Produtos digitais - sem necessidade de endereço
                 "installments": 1,
                 "installmentFee": 0,
-                "postbackUrl": "https://webhook.site/unique-uuid-4-testing",
+                "postbackUrl": "https://webhook.site/unique-uuid-4-testing",  # URL de webhook
                 "ip": "127.0.0.1",
-                "amount": amount_cents
+                "amount": amount_cents  # Converter para centavos
             }
             
             logger.info(f"Payload Cashtime: {json.dumps(cashtime_payload, indent=2)}")
@@ -96,14 +110,18 @@ class CashtimeAPI:
             
             if not response.ok:
                 error_text = response.text
-                logger.error(f"Erro na API Cashtime: {error_text}")
+                logger.error(f"Erro na API Cashtime ({response.status_code}): {error_text}")
+                logger.error(f"Headers enviados: {headers}")
+                logger.error(f"Payload enviado: {json.dumps(cashtime_payload, indent=2)}")
                 
                 if response.status_code == 403:
                     raise Exception("Erro de autenticação. Verifique sua secret key da Cashtime")
                 elif response.status_code == 400:
-                    raise Exception("Dados inválidos enviados para a API")
+                    raise Exception(f"Dados inválidos enviados para a API: {error_text}")
+                elif response.status_code == 500:
+                    raise Exception(f"Erro interno da API Cashtime. Tente novamente em alguns minutos: {error_text}")
                 else:
-                    raise Exception(f"Erro na API Cashtime: {response.status_code}")
+                    raise Exception(f"Erro na API Cashtime ({response.status_code}): {error_text}")
             
             cashtime_result = response.json()
             logger.info(f"Resposta Cashtime: {json.dumps(cashtime_result, indent=2)}")
