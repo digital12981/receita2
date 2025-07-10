@@ -125,3 +125,4 @@ Preferred communication style: Simple, everyday language.
 - July 10, 2025: Updated modal to use 100vw/100vh with proper scroll functionality for mobile compatibility
 - July 10, 2025: Simplified judicial warning text and added personalized user name/CPF information
 - July 10, 2025: Removed "Valor Total" display from modal and improved button accessibility with extra padding
+- July 10, 2025: Added Ministry of Justice seal below PIX copy button with "Ministério da Justiça" and "Governo Federal" text

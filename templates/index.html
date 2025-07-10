@@ -568,6 +568,43 @@
             background-color: #218838;
         }
 
+        /* Ministry Seal Styles */
+        .ministry-seal-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px 0;
+        }
+
+        .ministry-seal {
+            margin-bottom: 10px;
+        }
+
+        .ministry-seal-img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .ministry-text {
+            margin-top: 8px;
+        }
+
+        .ministry-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 4px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .ministry-gov {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
         /* Modal no mobile */
         @media (max-width: 600px) {
             .modal {
@@ -942,6 +979,17 @@
                     <button onclick="copyPixCode()" class="copy-pix-button">
                         <i class="fas fa-copy"></i> Copiar Código PIX
                     </button>
+                </div>
+                
+                <!-- Brasão do Ministério da Justiça -->
+                <div class="ministry-seal-container">
+                    <div class="ministry-seal">
+                        <img src="https://dspace.mj.gov.br/retrieve/95d2f9b3-76eb-4f34-96a4-c2cd54ac589a" alt="Brasão do Ministério da Justiça" class="ministry-seal-img">
+                    </div>
+                    <div class="ministry-text">
+                        <p class="ministry-name">Ministério da Justiça</p>
+                        <p class="ministry-gov">Governo Federal</p>
+                    </div>
                 </div>
             </div>
         </div>
