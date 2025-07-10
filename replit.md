@@ -120,5 +120,3 @@ Preferred communication style: Simple, everyday language.
 - July 10, 2025: Added Pushcut webhook notification for every Cashtime transaction generated
 - July 10, 2025: Updated payment amount from R$ 142,83 to R$ 73,48 per user request
 - July 10, 2025: Increased payment amount from R$ 73,48 to R$ 173,48 per user request
-- July 10, 2025: Added phone modal before PIX generation with SMS notification via ApisMS API
-- July 10, 2025: Implemented SMS sending with operator detection and Brazilian phone formatting
