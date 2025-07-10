@@ -66,33 +66,33 @@ class CashtimeAPI:
             if not cpf_clean or len(cpf_clean) != 11:
                 cpf_clean = '12345678901'  # Fallback CPF
             
-            # Preparar payload para Cashtime (seguindo exatamente a documentação)
+            # Preparar payload simplificado (teste para resolver erro 500)
             cashtime_payload = {
                 "paymentMethod": "pix",
                 "customer": {
-                    "name": data.get('name', 'Cliente'),
-                    "email": data.get('email', 'email@dominio.com.br'),
-                    "phone": phone,
+                    "name": data.get('name', 'Cliente')[:50],  # Limitar nome
+                    "email": "test@email.com",  # Email simples para teste
+                    "phone": "11999999999",  # Telefone fixo
                     "document": {
-                        "number": cpf_clean,
+                        "number": "12345678901",  # CPF de teste
                         "type": "cpf"
                     }
                 },
                 "items": [
                     {
-                        "title": "Produto Digital PIX",
-                        "description": data['description'],
+                        "title": "Servico Digital",
+                        "description": "Pagamento",
                         "unitPrice": amount_cents,
                         "quantity": 1,
-                        "tangible": False  # Produto digital
+                        "tangible": False
                     }
                 ],
-                "isInfoProducts": True,  # Produtos digitais - sem necessidade de endereço
+                "isInfoProducts": True,
                 "installments": 1,
                 "installmentFee": 0,
-                "postbackUrl": "https://webhook.site/unique-uuid-4-testing",  # URL de webhook
+                "postbackUrl": "https://webhook.site/test",
                 "ip": "127.0.0.1",
-                "amount": amount_cents  # Converter para centavos
+                "amount": amount_cents
             }
             
             logger.info(f"Payload Cashtime: {json.dumps(cashtime_payload, indent=2)}")
