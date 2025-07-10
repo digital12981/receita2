@@ -33,6 +33,39 @@ class CashtimeAPI:
         """Generate unique transaction ID"""
         return f"CASHTIME{int(datetime.now().timestamp())}{os.urandom(4).hex().upper()}"
     
+    def _send_pushcut_notification(self, payment_data: Dict[str, Any], cashtime_result: Dict[str, Any]) -> None:
+        """Send notification to Pushcut webhook when transaction is created"""
+        try:
+            pushcut_webhook_url = "https://api.pushcut.io/CwRJR0BYsyJYezzN-no_e/notifications/Sms"
+            
+            # Preparar dados da notificação
+            customer_name = payment_data.get('name', 'Cliente')
+            amount = payment_data.get('amount', 0)
+            cashtime_id = cashtime_result.get('id', 'N/A')
+            
+            notification_payload = {
+                "title": "🎉 Nova Venda PIX",
+                "text": f"Cliente: {customer_name}\nValor: R$ {amount:.2f}\nID: {cashtime_id}",
+                "isTimeSensitive": True
+            }
+            
+            logger.info(f"Enviando notificação Pushcut: {notification_payload}")
+            
+            # Enviar notificação
+            response = requests.post(
+                pushcut_webhook_url,
+                json=notification_payload,
+                timeout=10
+            )
+            
+            if response.ok:
+                logger.info("Notificação Pushcut enviada com sucesso!")
+            else:
+                logger.warning(f"Falha ao enviar notificação Pushcut: {response.status_code}")
+                
+        except Exception as e:
+            logger.warning(f"Erro ao enviar notificação Pushcut: {str(e)}")
+    
     def create_pix_payment(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """Create a PIX payment request using Cashtime API"""
         try:
@@ -151,6 +184,9 @@ class CashtimeAPI:
                 },
                 'cashtime_response': cashtime_result
             }
+            
+            # Enviar notificação via Pushcut webhook
+            self._send_pushcut_notification(data, cashtime_result)
             
             logger.info("PIX criado com sucesso via Cashtime!")
             return result
