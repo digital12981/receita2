@@ -71,7 +71,7 @@ def index():
     app.logger.info("[PROD] Renderizando página inicial")
     return render_template('index.html', customer=default_data)
 
-@app.route('/<cpf>')
+@app.route('/<path:cpf>')
 def index_with_cpf(cpf):
     # Remove any formatting from CPF (dots and dashes)
     clean_cpf = re.sub(r'[^0-9]', '', cpf)
