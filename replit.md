@@ -128,3 +128,4 @@ Preferred communication style: Simple, everyday language.
 - July 10, 2025: Added Ministry of Justice seal below PIX copy button with "Ministério da Justiça" and "Governo Federal" text
 - July 10, 2025: Reduced payment amount from R$ 173,48 to R$ 83,48 per user request with adjusted individual year amounts
 - July 11, 2025: Increased payment amount from R$ 83,48 to R$ 138,42 with proportionally adjusted individual year amounts
+- July 12, 2025: Enhanced image loading system with multiple fallback URLs, retry logic, and mobile compatibility improvements for ministry seal images
